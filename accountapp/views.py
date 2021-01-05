@@ -42,10 +42,12 @@ class AccountDetailView(DetailView):
 class AccountUpdateView(UpdateView):
     model = User
     form_class = AccountUpdateForm
+    context_object_name = 'target_user'
     success_url = reverse_lazy('accountapp:hello_world')  # reverse_lazy는 클래스형 뷰에서 사용한다.
     template_name = 'accountapp/update.html'
 
 class AccountDeleteView(DeleteView):
     model = User
+    context_object_name = 'target_user'
     success_url = reverse_lazy('accountapp:login')  # reverse_lazy는 클래스형 뷰에서 사용한다.
     template_name = 'accountapp/delete.html'
