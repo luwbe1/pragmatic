@@ -19,19 +19,23 @@ var checkParams = function (config) {
         throw new Error("No config object has been provided.");
     }
 
-    for(var prop of booleanProps){
-        if(typeof config[prop] !== "boolean"){
+    for (var prop of booleanProps) {
+        if (typeof config[prop] !== "boolean") {
             config[prop] = true;
         }
     }
 
 
-    if(typeof config.gutter !== "number"){
+    if (typeof config.gutter !== "number") {
         config.gutter = DEFAULT_GUTTER;
     }
 
-    if (!config.container) { error("container"); }
-    if (!config.items && !config.static) { error("items or static"); }
+    if (!config.container) {
+        error("container");
+    }
+    if (!config.items && !config.static) {
+        error("items or static");
+    }
 };
 
 
@@ -57,7 +61,9 @@ var getMin = function (cols) {
     var min = cols[0];
 
     for (var col of cols) {
-        if (col.height < min.height) { min = col; }
+        if (col.height < min.height) {
+            min = col;
+        }
     }
 
     return min;
@@ -72,14 +78,13 @@ var getMin = function (cols) {
  * grid layout.
  */
 
-var MagicGrid = function MagicGrid (config) {
+var MagicGrid = function MagicGrid(config) {
     checkParams(config);
 
     if (config.container instanceof HTMLElement) {
         this.container = config.container;
         this.containerClass = config.container.className;
-    }
-    else {
+    } else {
         this.containerClass = config.container;
         this.container = document.querySelector(config.container);
     }
@@ -103,8 +108,10 @@ var MagicGrid = function MagicGrid (config) {
  *
  * @private
  */
-MagicGrid.prototype.init = function init () {
-    if (!this.ready() || this.started) { return; }
+MagicGrid.prototype.init = function init() {
+    if (!this.ready() || this.started) {
+        return;
+    }
 
     this.container.style.position = "relative";
 
@@ -127,7 +134,7 @@ MagicGrid.prototype.init = function init () {
  * @return width of a column in the grid
  * @private
  */
-MagicGrid.prototype.colWidth = function colWidth () {
+MagicGrid.prototype.colWidth = function colWidth() {
     return this.items[0].getBoundingClientRect().width + this.gutter;
 };
 
@@ -138,10 +145,10 @@ MagicGrid.prototype.colWidth = function colWidth () {
  * @return {{cols: Array, wSpace: number}}
  * @private
  */
-MagicGrid.prototype.setup = function setup () {
+MagicGrid.prototype.setup = function setup() {
     var width = this.container.getBoundingClientRect().width;
     var colWidth = this.colWidth();
-    var numCols = Math.floor(width/colWidth) || 1;
+    var numCols = Math.floor(width / colWidth) || 1;
     var cols = [];
 
     if (this.maxColumns && numCols > this.maxColumns) {
@@ -166,7 +173,7 @@ MagicGrid.prototype.setup = function setup () {
  * @return {*} next available column
  * @private
  */
-MagicGrid.prototype.nextCol = function nextCol (cols, i) {
+MagicGrid.prototype.nextCol = function nextCol(cols, i) {
     if (this.useMin) {
         return getMin(cols);
     }
@@ -180,7 +187,7 @@ MagicGrid.prototype.nextCol = function nextCol (cols, i) {
  * and index then stretches the container to
  * the height of the grid.
  */
-MagicGrid.prototype.positionItems = function positionItems () {
+MagicGrid.prototype.positionItems = function positionItems() {
     var ref = this.setup();
     var cols = ref.cols;
     var wSpace = ref.wSpace;
@@ -196,17 +203,16 @@ MagicGrid.prototype.positionItems = function positionItems () {
         var left = col.index * colWidth + wSpace + "px";
         var top = col.height + topGutter + "px";
 
-        if(this.useTransform){
+        if (this.useTransform) {
             item.style.transform = "translate(" + left + ", " + top + ")";
-        }
-        else{
+        } else {
             item.style.top = top;
             item.style.left = left;
         }
 
         col.height += item.getBoundingClientRect().height + topGutter;
 
-        if(col.height > maxHeight){
+        if (col.height > maxHeight) {
             maxHeight = col.height;
         }
     }
@@ -220,8 +226,10 @@ MagicGrid.prototype.positionItems = function positionItems () {
  *
  * @return {Boolean} true if every item is present
  */
-MagicGrid.prototype.ready = function ready () {
-    if (this.static) { return true; }
+MagicGrid.prototype.ready = function ready() {
+    if (this.static) {
+        return true;
+    }
     return this.items.length >= this.size;
 };
 
@@ -233,7 +241,7 @@ MagicGrid.prototype.ready = function ready () {
  *
  * @private
  */
-MagicGrid.prototype.getReady = function getReady () {
+MagicGrid.prototype.getReady = function getReady() {
     var this$1 = this;
 
     var interval = setInterval(function () {
@@ -254,14 +262,14 @@ MagicGrid.prototype.getReady = function getReady () {
  * repositions them whenever the
  * window size changes.
  */
-MagicGrid.prototype.listen = function listen () {
+MagicGrid.prototype.listen = function listen() {
     var this$1 = this;
 
     if (this.ready()) {
         var timeout;
 
         window.addEventListener("resize", function () {
-            if (!timeout){
+            if (!timeout) {
                 timeout = setTimeout(function () {
                     this$1.positionItems();
                     timeout = null;
@@ -270,8 +278,9 @@ MagicGrid.prototype.listen = function listen () {
         });
 
         this.positionItems();
+    } else {
+        this.getReady();
     }
-    else { this.getReady(); }
 };
 
 let magicGrid = new MagicGrid({
@@ -282,14 +291,13 @@ let magicGrid = new MagicGrid({
     useMin: true
 });
 
-var masonrys = document.getElementsByTagName('img');
+var masonrys = document.getElementsByTagName("img");
 
-for (let i = 0; i<masonrys.length; i++) {
-    masonrys[i].addEventListener('load',function (){
+for (let i = 0; i < masonrys.length; i++) {
+    masonrys[i].addEventListener('load', function () {
         magicGrid.positionItems();
     }, false);
-} //이미지가 로드가 되었을 때, 리스트를 다시 배열하라.
-
+}
 
 magicGrid.listen();
 
