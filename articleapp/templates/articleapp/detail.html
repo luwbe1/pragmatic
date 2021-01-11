@@ -14,23 +14,25 @@
             <hr>
 
             <img style="width:100%; border-radius:1rem;"
-                    src="{{ target_article.image.url }}" alt="">
+                 src="{{ target_article.image.url }}" alt="">
 
             <p>
                 {{ target_article.content }}
             </p>
 
             {% if target_article.writer == user %}
-            <a href="{% url 'articleapp:update' pk=target_article.pk %}"
-            class="btn btn-primary rounded-pill col-3">
-                Update
-            </a>
-            <a href="{% url 'articleapp:delete' pk=target_article.pk %}"
-            class="btn btn-danger rounded-pill col-3">
-                Delete
-            </a>
+                <a href="{% url 'articleapp:update' pk=target_article.pk %}"
+                   class="btn btn-primary rounded-pill col-3">
+                    Update
+                </a>
+                <a href="{% url 'articleapp:delete' pk=target_article.pk %}"
+                   class="btn btn-danger rounded-pill col-3">
+                    Delete
+                </a>
             {% endif %}
             <hr>
+
+        {% include 'commentapp/create.html'  with article=target_article %}
 
         </div>
     </div>
