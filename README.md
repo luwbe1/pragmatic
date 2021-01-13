@@ -1,1 +1,1 @@
-# Django로 Pinterest 따
+# Django로 Pinterest 따라하기
