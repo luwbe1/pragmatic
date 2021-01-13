@@ -24,14 +24,14 @@ class ArticleCreateView(CreateView):
     form_class = ArticleCreationForm
     template_name = 'articleapp/create.html'
 
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+    def form_valid(self, form):
         temp_article = form.save(commit=False)
         temp_article.writer = self.request.user
         temp_article.save()
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse_lazy('articleapp:detail', kwargs={'pk': self.object.pk})
+        return reverse('articleapp:detail', kwargs={'pk': self.object.pk})
 
 
 class ArticleDetailView(DetailView, FormMixin):
@@ -50,7 +50,7 @@ class ArticleUpdateView(UpdateView):
     template_name = 'articleapp/update.html'
 
     def get_success_url(self) -> str:
-        return reverse_lazy('articleapp:detail', kwargs={'pk': self.object.pk})
+        return reverse('articleapp:detail', kwargs={'pk': self.object.pk})
 
 
 @method_decorator(article_ownership_required, 'get')
